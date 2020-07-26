@@ -5,14 +5,9 @@
   "productName": "Todo App",
   "author": "Deven Phillips <deven.phillips@redhat.com>",
   "private": true,
-  "watch": {
-    "build:client": "openapi.yml"
-  },
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
     "test": "echo \"See package.json => scripts for available tests.\" && exit 0",
-    "build:client": "openapi-generator generate -i openapi.yml -g typescript-axios -o src/apiClient",
-    "watch": "npm-watch",
     "test:unit": "jest --updateSnapshot",
     "test:unit:coverage": "jest --coverage",
     "test:unit:watch": "jest --watch",
@@ -24,7 +19,6 @@
     "@quasar/extras": "^1.0.0",
     "axios": "^0.18.1",
     "core-js": "^3.6.5",
-    "moment": "^2.27.0",
     "quasar": "^1.0.0",
     "vue-class-component": "^7.2.2",
     "vue-property-decorator": "^8.3.0",
@@ -32,7 +26,6 @@
   },
   "devDependencies": {
     "@jest/globals": "^26.1.0",
-    "@openapitools/openapi-generator-cli": "^1.0.15-4.3.1",
     "@quasar/app": "^2.0.0",
     "@quasar/quasar-app-extension-testing-unit-jest": "^1.0.1",
     "@types/jest": "^26.0.7",
@@ -45,8 +38,7 @@
     "eslint-config-prettier": "^6.9.0",
     "eslint-loader": "^3.0.3",
     "eslint-plugin-vue": "^6.1.2",
-    "jest": "^26.1.0",
-    "npm-watch": "^0.6.0"
+    "jest": "^26.1.0"
   },
   "browserslist": [
     "ie >= 11",

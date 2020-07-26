@@ -145,13 +145,8 @@ components:
           type: string
         title:
           type: string
-        description:
-          type: string
         complete:
           type: boolean
-        dueDate:
-          type: string
-          format: date
       example:
         id: ec3b48dc-938d-11ea-8877-c7ea413b00cb
         title: Example Todo

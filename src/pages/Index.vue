@@ -3,7 +3,6 @@
     <div class="row header-title">
       <div class="action-buttons col-1">&nbsp;</div>
       <div class="col-grow">Title</div>
-      <div class="narrow centered col-1">Due</div>
       <div class="narrow centered col-1">
         <q-icon name="check" />
       </div>
@@ -15,25 +14,7 @@
           <q-btn size="sm" round icon="delete" @click="deleteTodo(todo.id)" />
         </div>
         <div class="col">
-          <q-expansion-item
-            header-style="width=100%;"
-            v-if="todo.description"
-            dense
-            :label="todo.title"
-          >
-            <q-card v-if="todo.description" style="background-color: inherit;">
-              <q-card-section>{{ todo.description }}</q-card-section>
-            </q-card>
-          </q-expansion-item>
-          <q-item v-else>{{ todo.title }}</q-item>
-        </div>
-        <div class="narrow centered col-1">
-          <q-icon name="done"
-                  v-if="isOverdue(todo.dueDate)"
-                  class="text-red"
-                  style="font-size: 1.5rem;"
-          />
-          {{ todo.dueDate | daysRemaining }}
+          <q-item>{{ todo.title }}</q-item>
         </div>
         <div class="narrow centered col-1">
           <q-checkbox @input="toggleComplete(todo)" :value="todo.complete" />
@@ -52,35 +33,10 @@ import { mapState } from 'vuex';
 import { Todo } from 'src/apiClient';
 import { ApiWrapper } from '../WrapperTypes';
 import { AxiosError } from 'axios';
-import moment from 'moment';
 
 @Component({
   computed: {
     ...mapState(['app'])
-  },
-  filters: {
-    daysRemaining: function(dueDate) {
-      if (dueDate === undefined || dueDate === null || dueDate == '') {
-        return '';
-      }
-      const dueDate = new Date(dueDate);
-      const today = new Date();
-      dueDate.setHours(0, 0, 0);
-      today.setHours(0,0,0);
-      const millisInSecond = 1000;
-      const secondsInMinute = 60;
-      const minutesPerHour = 60;
-      const hoursPerDay = 24;
-      const toDaysConversion = millisInSecond*secondsInMinute*minutesPerHour*hoursPerDay;
-      const differenceInDays = Math.round((dueDate-today)/toDaysConversion);
-      if (differenceInDays<0) {
-        return `${Math.abs(differenceInDays)} days ago`;
-      } else if (differenceInDays == 0) {
-        return 'Today';
-      } else {
-        return `${differenceInDays} days`
-      }
-    }
   }
 })
 export default class PageIndex extends Vue {
@@ -113,14 +69,6 @@ export default class PageIndex extends Vue {
    */
   edit(todo: Todo) {
     void this.$router.push({ name: 'edit', params: { id: todo.id ?? '' } });
-  }
-
-  /**
-   * Check the dueDate versus the current date to see if an item is overdue.
-   */
-  isOverdue(dueDate: string) {
-    let parsedDueDate = moment.parseZone(dueDate);
-    return parsedDueDate.isSameOrBefore(moment.now());
   }
 
   /**
