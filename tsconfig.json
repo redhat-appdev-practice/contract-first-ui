@@ -5,8 +5,5 @@
     "experimentalDecorators": true,
     "target": "es5",
     "types": ["jest","node"]
-  },
-  "include": [
-    "test/**/*.ts"
-  ]
+  }
 }
