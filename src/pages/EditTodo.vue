@@ -17,8 +17,10 @@ import { ApiWrapper } from '../WrapperTypes';
 
 @Component
 export default class EditTodo extends Vue {
+  editing: NewTodo = {title: ''};
+
   @Prop({default: null})
-  id?: string
+  id?: string;
 
   addTodo(todo: NewTodo) {
     this.$q.loading.show();
@@ -55,8 +57,8 @@ export default class EditTodo extends Vue {
   }
 
   updateOrAddTodo() {
-    let todoItem = { ...this.$data.editing }
-    if (this.$data.editing.id == undefined) {
+    let todoItem = { ...this.editing } as Todo;
+    if (this.editing?.id == undefined) {
       this.addTodo(todoItem);
     } else {
       this.updateTodo(todoItem);
@@ -74,31 +76,48 @@ export default class EditTodo extends Vue {
   mounted() {
     // Initialize the holder object if it is not already populated
     if (this.isNewTodo) {
-      this.$data.editing = { title: '', complete: false };
+      console.log("New Todo");
+      this.editing = { title: '', complete: false };
     } else if (this.isEdit) {
+      console.log("Edit Todo");
       // If the user hits the reload button in the browser, we want to restore the state
-      const loadedFromState = this.$store.state.app.todos.find((item: Todo) => item.id == this.$props.id);
-      this.$data.editing = {...loadedFromState};
+      const loadedFromState = this.$store.state.app.todos.find((item: Todo) => item.id == this.id!);
+      console.log(`Loaded from state: ${JSON.stringify(loadedFromState)}`);
+      if (loadedFromState == null) {
+        console.log("Null Todo");
+        (this.$api as ApiWrapper).todos.getTodo(this.id!)
+          .then((res: AxiosResponse) => {
+            console.log(`Retrieved Todo: ${JSON.stringify(res.data)}`);
+            this.editing = { ...res.data } as Todo
+          })
+          .catch((err: AxiosError) => this.$q.notify({
+            type: 'warning',
+            message: `Error loading Todo for '${this.id}'`
+          }))
+      } else {
+        this.editing = { ...loadedFromState } as Todo;
+        console.log(`Cached Todo: ${JSON.stringify(this.editing)}`);
+      }
     }
   }
 
   get isNewTodo() {
-    return (this.$props.id === undefined || this.$props.id == null);
+    return (this.id === null);
   }
 
   get isEdit() {
-    return (this.$props.id !== undefined && this.$props.id !== null && this.$props.id != '');
+    return (this.id !== undefined && this?.id != '');
   }
 
   get isDisabled() {
     if (this.isEdit) {
-      const loadedFromState: NewTodo = this.$store.state.app.todos.find((item: Todo) => item.id == this.$props.id);
+      const loadedFromState: NewTodo = this.$store.state.app.todos.find((item: Todo) => item.id == this.id);
       let original: NewTodo = {...loadedFromState};
-      const current = {...this.$data.editing};
+      const current = {...this.editing} as NewTodo;
 
       return this.todoHasBeenModified(original, current);
     } else if (this.isNewTodo) {
-      return (this.$data.editing.title === undefined || this.$data.editing.title === null && this.$data.editing.title.length == 0);
+      return (this.editing?.title === undefined && this.editing?.title);
     }
     return false;
   }
