@@ -1,11 +1,13 @@
 import { RouteConfig } from 'vue-router';
 
-const routes: RouteConfig[] = [
+const routes = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Index.vue') }
+      { name: 'home', path: '', component: () => import('pages/Index.vue') },
+      { name: 'new', path: 'new', component: () => import('pages/EditTodo.vue') },
+      { name: 'edit', path: 'edit/:id', component: () => import('pages/EditTodo.vue'), props: (route) => ({ id: route.params.id }) }
     ]
   },
 

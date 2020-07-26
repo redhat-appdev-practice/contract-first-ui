@@ -50,7 +50,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/Todo"
           description: Successful response - returns an array of `Todo` entities.
-      operationId: gettodos
+      operationId: getTodos
       tags:
         - todos
       summary: List All todos
@@ -132,7 +132,7 @@ paths:
         in: path
         required: true
 components:
-  schemas:    
+  schemas:
     NewTodo:
       title: NewTodo
       description: A Todo list item
@@ -147,18 +147,11 @@ components:
           type: string
         description:
           type: string
-        created:
-          format: date-time
-          type: string
-          readOnly: true
-        dueDate:
-          format: date-time
-          type: string
         complete:
           type: boolean
-        author:
+        dueDate:
           type: string
-          readOnly: true
+          format: date
       example:
         id: ec3b48dc-938d-11ea-8877-c7ea413b00cb
         title: Example Todo

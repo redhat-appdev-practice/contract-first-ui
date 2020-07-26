@@ -41,8 +41,28 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
+import { AxiosError, AxiosResponse } from 'axios';
 
 @Component
 export default class MainLayout extends Vue {
+  mounted() {
+    this.$q.loading.show(); // Show loading indicator
+    this.$api.todos.getTodos()
+      .then(this.loadTodosOnMount)
+      .catch(this.handleApiError);
+  }
+
+  loadTodosOnMount(response: AxiosResponse) {
+    this.$q.loading.hide(); // Hide loading indicator
+    this.$store.commit('app/loadTodos', response.data);  // Store the loaded Todos in the global Vuex state
+  }
+
+  handleApiError(err: AxiosError) {
+    this.$q.loading.hide(); // Hide loading indicator
+    this.$q.notify({  // Notify the user of the error using a snackbar
+      type: 'warning',
+      message: `Error loading data from server: ${err.message}`
+    });
+  }
 }
 </script>

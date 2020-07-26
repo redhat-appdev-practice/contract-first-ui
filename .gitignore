@@ -34,3 +34,12 @@ yarn-error.log*
 
 src/apiClient
 package-lock.json
+/test/jest/coverage/lcov-report/
+/test/jest/coverage/clover.xml
+/test/jest/coverage/coverage-final.json
+/test/jest/coverage/lcov.info
+
+## Ignore files we don't want created before the demo
+
+test/jest/__tests__/*.spec.ts
+test/jest/__tests__/*.spec.js
