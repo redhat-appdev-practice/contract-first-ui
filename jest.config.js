@@ -29,7 +29,10 @@ module.exports = {
   testMatch: [
     '<rootDir>/test/jest/__tests__/**/*.spec.js',
     '<rootDir>/test/jest/__tests__/**/*.test.js',
-    '<rootDir>/src/**/__tests__/*_jest.spec.js'
+    '<rootDir>/src/**/__tests__/*_jest.spec.js',
+    '<rootDir>/test/jest/__tests__/**/*.spec.ts',
+    '<rootDir>/test/jest/__tests__/**/*.test.ts',
+    '<rootDir>/src/**/__tests__/*_jest.spec.ts'
   ],
   moduleFileExtensions: [
     'vue',
