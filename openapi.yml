@@ -150,7 +150,6 @@ components:
       example:
         id: ec3b48dc-938d-11ea-8877-c7ea413b00cb
         title: Example Todo
-        description: This is a Todo entity with a description
         complete: false
     Todo:
       title: Todo
