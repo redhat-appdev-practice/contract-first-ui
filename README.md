@@ -183,6 +183,7 @@ cd contract-first-ui
     }
     ```
    * And now, running our test will pass!
+   * **NOTE:** When you save the `MainLayout.vue` file, in your browser you should immediately see data show up in the grid as well!
 
 ### Actual Contract-First UI Development
 1. In your browser, load the app (http://localhost:8080)
@@ -239,6 +240,7 @@ cd contract-first-ui
     ```
    * As soon as you save that change, you should immediately see the page reload and the expansion item will be visible.
      * **NOTE:** You *MAY* need to reload the page manually for the new data from the API to be displayed
+     ![Todo App With Description Added](images/TodoListWithDescriptionAdded.png)
 1. Now, add the `dueDate` to `Index.vue`.
    * Add a `filter` to the `Index.vue` component
     ```typescript
@@ -309,6 +311,7 @@ cd contract-first-ui
     }
     ```
    * Save the file and you should see the new column displayed
+   ![Todo List With Due Date Added](images/TodoAppWithDueDateAdded.png)
 
 ### Extra Credit
 1. See if you can implement the 2 new fields in the `EditTodo` component! 
