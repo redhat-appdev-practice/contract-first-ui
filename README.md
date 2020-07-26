@@ -313,5 +313,13 @@ cd contract-first-ui
    * Save the file and you should see the new column displayed
    ![Todo List With Due Date Added](images/TodoAppWithDueDateAdded.png)
 
+## Key Takeaways
+
+At this point, I hope that it's obvious how quickly your UI can evolve and still be assured that it will work with an API developed using Contract-First approaches. The key takeaways here are:
+* Always use the openapi-generator to build your Client SDK and never store that Client SDK in source control.
+* Your OpenAPI Spec should be the "source of truth"
+* Use tools like `fakeit` to allow you to shorten feedback cycles
+* Mock the Client SDK when you implement unit tests
+
 ### Extra Credit
 1. See if you can implement the 2 new fields in the `EditTodo` component! 
