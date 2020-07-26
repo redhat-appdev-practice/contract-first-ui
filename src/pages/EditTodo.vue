@@ -1,17 +1,7 @@
 <template>
   <q-page class="column fill-screen">
     <q-input class="row-1" label="Title" v-model="editing.title" :rules="[val => !!val && val != '' || 'Title is required']"/>
-    <q-input class="row" label="Desciption" v-model="editing.description" type="textarea" />
     <q-checkbox class="row-1" label="Complete?" v-model="editing.complete" />
-    <q-input class="row-1" filled v-model="editing.dueDate" mask="date" :rules="['editing.dueDate']">
-      <template v-slot:append>
-        <q-icon name="event" class="cursor-pointer">
-          <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-            <q-date today-btn mask="YYYY-MM-DD" v-model="editing.dueDate" title="Due Date" @input="$refs.qDateProxy.hide()" />
-          </q-popup-proxy>
-        </q-icon>
-      </template>
-    </q-input>
     <div class="row-1">
       <q-btn :label="actionButtonText" color="primary" text-color="negative" :disable="isDisabled" @click="updateOrAddTodo" />&nbsp;
       <q-btn label="Cancel" color="primary" text-color="negative" @click="$router.back()" />
@@ -66,7 +56,6 @@ export default class EditTodo extends Vue {
 
   updateOrAddTodo() {
     let todoItem = { ...this.$data.editing }
-    todoItem.author = this.$store.state.app.user.preferred_username;
     if (this.$data.editing.id == undefined) {
       this.addTodo(todoItem);
     } else {
@@ -85,7 +74,7 @@ export default class EditTodo extends Vue {
   mounted() {
     // Initialize the holder object if it is not already populated
     if (this.isNewTodo) {
-      this.$data.editing = { title: '', description: '', complete: false, dueDate: '' };
+      this.$data.editing = { title: '', complete: false };
     } else if (this.isEdit) {
       // If the user hits the reload button in the browser, we want to restore the state
       const loadedFromState = this.$store.state.app.todos.find((item: Todo) => item.id == this.$props.id);
