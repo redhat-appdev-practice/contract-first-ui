@@ -26,14 +26,17 @@ interface with the API, and do development using a Mock API server.
 ### Install The Tools
 
 * fakeit - A Ruby Mock API Server which generates "fake" responses based on the definitions in an OpenAPI Specification
-  * `gem install fakeit` - On some systems, this may need to be prefaced with `sudo`
+  * `gem install fakeit`
+    * On some systems, this may need to be prefaced with `sudo`
+    * On MacOS, you may need to either upgrade Ruby or install an older version of `fakeit`
 * Quasar - A framework built on top of VueJS to allow for rapid cross-platform UI implementation
-  * `npm install @quasar/cli` - On some systems, this may need to be prefaced with `sudo`
+  * `npm install -g @quasar/cli`
+    * On some systems, this may need to be prefaced with `sudo`
 
 ### Clone the repository
 
 ```
-git clone git@github.com:redhat-appdev-practice/contract-first-ui.git
+git clone https://github.com/redhat-appdev-practice/contract-first-ui.git
 cd contract-first-ui
 ```
 
@@ -42,7 +45,26 @@ cd contract-first-ui
 ### Set up our build environment
 1. Open the source directory in your IDE
 1. Open the `openapi.yml` file in the root of the source directory
-   * Note that the `NewTodo` type has 3 fields defined: `id`, `title`, `complete`
+   * Note that the `NewTodo` type/schema has 3 fields defined: `id`, `title`, `complete`
+   * Example: 
+   ```
+   components:
+     schemas:
+       NewTodo:
+       title: NewTodo
+       description: A Todo list item
+       required:
+       - title
+       type: object
+       properties:
+         id:
+           format: uuid
+           type: string
+         title:
+           type: string
+         complete:
+           type: boolean
+        ```
 1. In a terminal, run `npm install` to download the project dependencies. This may take a few minutes.
 1. In another terminal session, start the `fakeit` Mock API server
    * `fakeit --spec openapi.yml --port 7080`
@@ -55,11 +77,16 @@ cd contract-first-ui
     ```
    * The first script will use OpenAPI Generator to generate an API Client SDK using TypeScript and [Axios](https://github.com/axios/axios)
    * The second script will use `npm-watch` as configured next.
-1. Add a new `watch` block to the `package.json`
+1. Add a new `watch` block to the `package.json` just before the `scripts` block
     ```json
-    "watch": {
+    {
+      "name": "todoui",
+      // .. SNIP ..      
+      "watch": {
         "build:client": "openapi.yml"
-    }
+      },
+      "scripts": {
+      // .. SNIP ..
     ```
    * This will watch for changes in the `openapi.yml` and automatically run the `build:client` script when it changes.
 1. In a free terminal, start the watch for the API Client SDK:
@@ -81,7 +108,7 @@ cd contract-first-ui
    * This snippet will force Quasar to attach our API SDK to the Vue components in our application, this it will be accessible everywhere in our application
 
 ### Demonstrate How To Mock The API For Unit Tests
-1. Let's write a unit test for our `MainLayout` component where we verify that we can use the API Client to retrieve Todos from our API server
+1. Let's write a unit test for our `src/layouts/MainLayout.vue` component where we verify that we can use the API Client to retrieve Todos from our API server
    * `test/jest/__tests__/MainLayout.spec.ts`
         ```typescript
         /* eslint-disable */
@@ -153,9 +180,11 @@ cd contract-first-ui
             })
         })
         ```
+    * You can run the test with `npm run test:unit` or from your IDE.
    * Running this test will fail because we have not implemented the API client in our component yet, so let's do that.
-1. Implement the `mounted` method in the `MainLayout` component
+1. Implement the `mounted` method in the `src/layouts/MainLayout.vue` component inside of the `<script>` block.
     ```typescript
+    <script lang="ts">
     import { Vue, Component } from 'vue-property-decorator';
     import { AxiosError, AxiosResponse } from 'axios';
 
@@ -181,9 +210,10 @@ cd contract-first-ui
             });
         }
     }
+    </script>
     ```
    * And now, running our test will pass!
-   * **NOTE:** When you save the `MainLayout.vue` file, in your browser you should immediately see data show up in the grid as well!
+   * **NOTE:** When you save the `src/layouts/MainLayout.vue` file, in your browser you should immediately see data show up in the grid as well!
 
 ### Actual Contract-First UI Development
 1. In your browser, load the app (http://localhost:8080)
@@ -199,31 +229,31 @@ cd contract-first-ui
 1. Open the `openapi.yml` file and add those new fields to the `NewTodo` schema
     ```yaml
     components:
-    schemas:
+      schemas:
         NewTodo:
-        title: NewTodo
-        description: A Todo list item
-        required:
-            - title
-        type: object
-        properties:
-            id:
+          title: NewTodo
+          description: A Todo list item
+          required:
+          - title
+          type: object
+            properties:
+              id:
                 format: uuid
                 type: string
-            title:
+              title:
                 type: string
-            description:
+              description:
                 type: string
-            complete:
+              complete:
                 type: boolean
-            dueDate:
+              dueDate:
                 type: string
                 format: date
     ```
    * When we save the API Spec, our `watch`ers should automatically rebuild our Client SDK and those fields will
      be available in our IDE. 
    * Also, our `fakeit` Mock API Server will have loaded the changed API Spec and will now return those new fields when we request Todo items
-1. Let's add the `description` field to our UI by way of an `expansion-item` component in `Index.vue`.
+1. Let's add the `description` field to our UI by way of an `expansion-item` component in `src/pages/Index.vue`.
    * Replace the `<q-item>{{ todo.title }}</q-item>` with:
     ```html
         <q-expansion-item
@@ -241,8 +271,9 @@ cd contract-first-ui
    * As soon as you save that change, you should immediately see the page reload and the expansion item will be visible.
      * **NOTE:** You *MAY* need to reload the page manually for the new data from the API to be displayed
      ![Todo App With Description Added](images/TodoListWithDescriptionAdded.png)
-1. Now, add the `dueDate` to `Index.vue`.
-   * Add a `filter` to the `Index.vue` component
+     * Clicking on the up/down arrows in your browser should show/hide the descriptions
+1. Now, add the `dueDate` to `src/pages/Index.vue`.
+   * Add a `filter` to the `src/pages/Index.vue` component
     ```typescript
     @Component({
     computed: {
@@ -279,7 +310,7 @@ cd contract-first-ui
     <div class="row header-title">
       <div class="action-buttons col-1">&nbsp;</div>
       <div class="col-grow">Title</div>
-      <div class="narrow centered col-1">Due</div>
+      <div class="narrow centered col-1">Due</div> <!-- ** HERE -->
       <div class="narrow centered col-1">
         <q-icon name="check" />
       </div>
@@ -287,19 +318,19 @@ cd contract-first-ui
     ```
    * Add the due date display just above the `div` for the `q-checkbox`
     ```html
-    <div class="narrow centered col-1">
+    <div class="narrow centered col-1">     <!-- Starting HERE -->
         <q-icon name="done"
         v-if="isOverdue(todo.dueDate)"
         class="text-red"
         style="font-size: 1.5rem;"
         />
         {{ todo.dueDate | daysRemaining }}
-    </div>
+    </div>                                  <!-- TO HERE -->
     <div class="narrow centered col-1">
         <q-checkbox @input="toggleComplete(todo)" :value="todo.complete" />
     </div>
     ```
-   * Add the `isOverdue` method to the Component Class
+   * Add the `isOverdue` method to the Index Component Class
     ```typescript
     /**
      * Check the dueDate versus the current date to see if an item is overdue.
