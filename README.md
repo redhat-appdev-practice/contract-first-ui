@@ -180,9 +180,11 @@ cd contract-first-ui
             })
         })
         ```
+    * You can run the test with `npm run test:unit` or from your IDE.
    * Running this test will fail because we have not implemented the API client in our component yet, so let's do that.
-1. Implement the `mounted` method in the `src/layouts/MainLayout.vue` component
+1. Implement the `mounted` method in the `src/layouts/MainLayout.vue` component inside of the `<script>` block.
     ```typescript
+    <script lang="ts">
     import { Vue, Component } from 'vue-property-decorator';
     import { AxiosError, AxiosResponse } from 'axios';
 
@@ -208,9 +210,10 @@ cd contract-first-ui
             });
         }
     }
+    </script>
     ```
    * And now, running our test will pass!
-   * **NOTE:** When you save the `MainLayout.vue` file, in your browser you should immediately see data show up in the grid as well!
+   * **NOTE:** When you save the `src/layouts/MainLayout.vue` file, in your browser you should immediately see data show up in the grid as well!
 
 ### Actual Contract-First UI Development
 1. In your browser, load the app (http://localhost:8080)
